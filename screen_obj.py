@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 
 class screen_obj:
@@ -59,7 +60,7 @@ class O_Paddle(screen_obj):
 
 
 class Ball(screen_obj):
-    """A class for the player paddle"""
+    """A class for the ball"""
 
     def __init__(self, pong_game):
         super().__init__(pong_game)
@@ -67,3 +68,25 @@ class Ball(screen_obj):
         self.image = pygame.image.load("images/fancy-ball.png")
         self.rect = self.image.get_rect()
         self.rect.center = self.screen_rect.center
+        self.velocity = [randint(4, 8), randint(-8, 8)]
+
+    def update(self):
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+
+    def bounce(self):
+        self.velocity[0] = -self.velocity[0]
+        self.velocity[1] = randint(-8, 8)
+
+    def blitme(self):
+        """Draw the ball at it's current location"""
+        self.screen.blit(self.image, self.rect)
+        if self.rect.x >= 1200:
+            self.velocity[0] = -self.velocity[0]
+        if self.rect.x <= 0:
+            self.velocity[0] = -self.velocity[0]
+        if self.rect.y > 800:
+            self.velocity[1] = -self.velocity[1]
+        if self.rect.y < 0:
+            self.velocity[1] = -self.velocity[1]
+

@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from settings import Settings
-from paddle import screen_obj, P_Paddle, O_Paddle, Ball
+from screen_obj import screen_obj, P_Paddle, O_Paddle, Ball
 
 
 class Pong:
@@ -12,18 +12,20 @@ class Pong:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
         )
-
         pygame.display.set_caption("Pong")
         self.p_paddle = P_Paddle(self)
         self.o_paddle = O_Paddle(self)
         self.ball = Ball(self)
+        self.clock = pygame.time.Clock()
 
     def run_game(self):
         while True:
+            self.ball.update()
             self._check_events()
             self.p_paddle.update()
             self.o_paddle.update()
             self._update_screen()
+            self.clock.tick(120)
 
     def _check_events(self):
         for event in pygame.event.get():
@@ -31,6 +33,8 @@ class Pong:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.QUIT:
+                sys.exit()
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_UP:
@@ -54,11 +58,16 @@ class Pong:
         elif event.key == pygame.K_s:
             self.p_paddle.moving_down = False
 
+    def collisions(self):
+        if self.ball.rect.collidelist([self.o_paddle.rect, self.p_paddle.rect]) != -1:
+            self.ball.bounce()
+
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
         self.p_paddle.blitme()
         self.o_paddle.blitme()
         self.ball.blitme()
+        self.collisions()
         pygame.display.flip()
 
 
