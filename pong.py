@@ -25,7 +25,7 @@ class Pong:
             self.p_paddle.update()
             self.o_paddle.update()
             self._update_screen()
-            self.clock.tick(120)
+            self.clock.tick(self.settings.clock)
 
     def _check_events(self):
         for event in pygame.event.get():
@@ -61,6 +61,14 @@ class Pong:
     def collisions(self):
         if self.ball.rect.collidelist([self.o_paddle.rect, self.p_paddle.rect]) != -1:
             self.ball.bounce()
+        if self.ball.rect.x >= 1200:
+            self.ball.velocity[0] = -self.ball.velocity[0]
+        if self.ball.rect.x <= 0:
+            self.ball.velocity[0] = -self.ball.velocity[0]
+        if self.ball.rect.y > 800:
+            self.ball.velocity[1] = -self.ball.velocity[1]
+        if self.ball.rect.y < 0:
+            self.ball.velocity[1] = -self.ball.velocity[1]
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)

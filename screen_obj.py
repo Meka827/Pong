@@ -81,12 +81,4 @@ class Ball(screen_obj):
     def blitme(self):
         """Draw the ball at it's current location"""
         self.screen.blit(self.image, self.rect)
-        if self.rect.x >= 1200:
-            self.velocity[0] = -self.velocity[0]
-        if self.rect.x <= 0:
-            self.velocity[0] = -self.velocity[0]
-        if self.rect.y > 800:
-            self.velocity[1] = -self.velocity[1]
-        if self.rect.y < 0:
-            self.velocity[1] = -self.velocity[1]
 
