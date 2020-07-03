@@ -12,6 +12,7 @@ class Pong:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
         )
+        self.screen_rect = self.screen.get_rect()
         pygame.display.set_caption("Pong")
         self.p_paddle = P_Paddle(self)
         self.o_paddle = O_Paddle(self)
@@ -61,13 +62,13 @@ class Pong:
     def collisions(self):
         if self.ball.rect.collidelist([self.o_paddle.rect, self.p_paddle.rect]) != -1:
             self.ball.bounce()
-        if self.ball.rect.x >= 1200:
+        if self.ball.rect.x >= self.screen_rect.right:
             self.ball.velocity[0] = -self.ball.velocity[0]
-        if self.ball.rect.x <= 0:
+        if self.ball.rect.x <= self.screen_rect.left:
             self.ball.velocity[0] = -self.ball.velocity[0]
-        if self.ball.rect.y > 800:
+        if self.ball.rect.y >= self.screen_rect.bottom:
             self.ball.velocity[1] = -self.ball.velocity[1]
-        if self.ball.rect.y < 0:
+        if self.ball.rect.y <= self.screen_rect.top:
             self.ball.velocity[1] = -self.ball.velocity[1]
 
     def _update_screen(self):
@@ -82,3 +83,4 @@ class Pong:
 if __name__ == "__main__":
     pong = Pong()
     pong.run_game()
+
