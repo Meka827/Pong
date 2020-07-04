@@ -2,7 +2,7 @@ import pygame
 from random import randint
 
 
-class screen_obj:
+class Screen_Obj:
     """A class to manage the objects displayed on screen"""
 
     def __init__(self, pong_game):
@@ -18,7 +18,7 @@ class screen_obj:
         self.screen.blit(self.image, self.rect)
 
 
-class P_Paddle(screen_obj):
+class P_Paddle(Screen_Obj):
     """A class for the player paddle"""
 
     def __init__(self, pong_game):
@@ -38,7 +38,7 @@ class P_Paddle(screen_obj):
         self.rect.y = self.y
 
 
-class O_Paddle(screen_obj):
+class O_Paddle(Screen_Obj):
     """A class for the opponent paddle"""
 
     def __init__(self, pong_game):
@@ -59,7 +59,7 @@ class O_Paddle(screen_obj):
         self.rect.y = self.y
 
 
-class Ball(screen_obj):
+class Ball(Screen_Obj):
     """A class for the ball"""
 
     def __init__(self, pong_game):
@@ -68,7 +68,7 @@ class Ball(screen_obj):
         self.image = pygame.image.load("images/fancy-ball.png")
         self.rect = self.image.get_rect()
         self.rect.center = self.screen_rect.center
-        self.velocity = [randint(4, 8), randint(-8, 8)]
+        self.velocity = [0, 0]
 
     def update(self):
         self.rect.x += self.velocity[0]
@@ -81,4 +81,16 @@ class Ball(screen_obj):
     def blitme(self):
         """Draw the ball at it's current location"""
         self.screen.blit(self.image, self.rect)
+
+    def center_ball(self):
+        self.rect.center = self.screen_rect.center
+        self.velocity = [0, 0]
+
+    def serve_ball(self):
+        self.velocity = [randint(4, 8), randint(-8, 8)]
+
+    def move_ball_offscreen(self):
+        self.rect.x = self.settings.screen_width + 100
+        self.rect.y = self.settings.screen_height + 100
+        self.velocity = [0, 0]
 

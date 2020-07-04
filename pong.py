@@ -2,8 +2,8 @@ import pygame
 import sys
 
 from settings import Settings
-from screen_obj import screen_obj, P_Paddle, O_Paddle, Ball
-from score import Score, P_Score, O_Score
+from screen_obj import Screen_Obj, P_Paddle, O_Paddle, Ball
+from text_obj import Text_Obj, P_Score, O_Score, Victory_text
 
 
 class Pong:
@@ -20,6 +20,7 @@ class Pong:
         self.p_score = P_Score(self)
         self.o_score = O_Score(self)
         self.ball = Ball(self)
+        self.Victory_text = Victory_text(self, "")
         self.clock = pygame.time.Clock()
 
     def run_game(self):
@@ -49,6 +50,8 @@ class Pong:
             self.p_paddle.moving_up = True
         elif event.key == pygame.K_s:
             self.p_paddle.moving_down = True
+        elif event.key == pygame.K_SPACE and self.ball.velocity == [0, 0]:
+            self.reset_game()
         elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
             sys.exit()
 
@@ -65,16 +68,37 @@ class Pong:
     def collisions(self):
         if self.ball.rect.collidelist([self.o_paddle.rect, self.p_paddle.rect]) != -1:
             self.ball.bounce()
-        if self.ball.rect.x >= self.screen_rect.right:
+        if self.ball.rect.x >= self.screen_rect.right and self.ball.velocity != [0, 0]:
             self.ball.velocity[0] = -self.ball.velocity[0]
-            self.p_score.update_score()
-        if self.ball.rect.x <= self.screen_rect.left:
+            if self.p_score.textobj < 10:
+                self.p_score.update_textobj()
+                self._check_victory()
+        if self.ball.rect.x <= self.screen_rect.left and self.ball.velocity != [0, 0]:
             self.ball.velocity[0] = -self.ball.velocity[0]
-            self.o_score.update_score()
+            if self.o_score.textobj < 10:
+                self.o_score.update_textobj()
+                self._check_victory()
         if self.ball.rect.y >= self.screen_rect.bottom:
             self.ball.velocity[1] = -self.ball.velocity[1]
         if self.ball.rect.y <= self.screen_rect.top:
             self.ball.velocity[1] = -self.ball.velocity[1]
+
+    def _check_victory(self):
+        if self.p_score.textobj >= 10:
+            self.Victory_text = Victory_text(self, "Player 1 Wins!")
+            self.Victory_text.blitme()
+            self.ball.move_ball_offscreen()
+        elif self.o_score.textobj >= 10:
+            self.Victory_text = Victory_text(self, "Player 2 Wins!")
+            self.Victory_text.blitme()
+            self.ball.move_ball_offscreen()
+
+    def reset_game(self):
+        self.ball.center_ball()
+        self.ball.serve_ball()
+        self.p_score = P_Score(self)
+        self.o_score = O_Score(self)
+        self.Victory_text.update_textobj()
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
@@ -82,6 +106,7 @@ class Pong:
         self.o_paddle.blitme()
         self.p_score.blitme()
         self.o_score.blitme()
+        self.Victory_text.blitme()
         self.ball.blitme()
         self.collisions()
         pygame.display.flip()
