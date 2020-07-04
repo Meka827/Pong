@@ -3,6 +3,7 @@ import sys
 
 from settings import Settings
 from screen_obj import screen_obj, P_Paddle, O_Paddle, Ball
+from score import Score, P_Score, O_Score
 
 
 class Pong:
@@ -16,6 +17,8 @@ class Pong:
         pygame.display.set_caption("Pong")
         self.p_paddle = P_Paddle(self)
         self.o_paddle = O_Paddle(self)
+        self.p_score = P_Score(self)
+        self.o_score = O_Score(self)
         self.ball = Ball(self)
         self.clock = pygame.time.Clock()
 
@@ -64,8 +67,10 @@ class Pong:
             self.ball.bounce()
         if self.ball.rect.x >= self.screen_rect.right:
             self.ball.velocity[0] = -self.ball.velocity[0]
+            self.p_score.update_score()
         if self.ball.rect.x <= self.screen_rect.left:
             self.ball.velocity[0] = -self.ball.velocity[0]
+            self.o_score.update_score()
         if self.ball.rect.y >= self.screen_rect.bottom:
             self.ball.velocity[1] = -self.ball.velocity[1]
         if self.ball.rect.y <= self.screen_rect.top:
@@ -75,6 +80,8 @@ class Pong:
         self.screen.fill(self.settings.bg_color)
         self.p_paddle.blitme()
         self.o_paddle.blitme()
+        self.p_score.blitme()
+        self.o_score.blitme()
         self.ball.blitme()
         self.collisions()
         pygame.display.flip()
