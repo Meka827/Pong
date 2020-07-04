@@ -69,6 +69,7 @@ class Ball(Screen_Obj):
         self.rect = self.image.get_rect()
         self.rect.center = self.screen_rect.center
         self.velocity = [0, 0]
+        self.sfx = pygame.mixer.Sound("sounds/blip.wav")
 
     def update(self):
         self.rect.x += self.velocity[0]
@@ -94,3 +95,5 @@ class Ball(Screen_Obj):
         self.rect.y = self.settings.screen_height + 100
         self.velocity = [0, 0]
 
+    def play_sfx(self):
+        pygame.mixer.Sound.play(self.sfx)

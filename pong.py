@@ -67,6 +67,7 @@ class Pong:
 
     def collisions(self):
         if self.ball.rect.collidelist([self.o_paddle.rect, self.p_paddle.rect]) != -1:
+            self.ball.play_sfx()
             self.ball.bounce()
         if self.ball.rect.x >= self.screen_rect.right and self.ball.velocity != [0, 0]:
             self.ball.velocity[0] = -self.ball.velocity[0]
